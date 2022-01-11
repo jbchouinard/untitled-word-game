@@ -6,6 +6,7 @@ from wordgame.words import WORDS
 
 try:
     from wordgame.fastcheck import check
+    print("Using fastcheck.")
 except ImportError:
 
     def check(guess, solution):
@@ -33,10 +34,10 @@ except ImportError:
 
         return correct, at_least, at_most
 
-    # print("Could not import fastcheck, was it built with Cython?")
-    # print("You may try building it with: python setup.py build_ext --inplace")
-    # print("and re-installing the package.")
-    # print("Using slower check function.")
+    print("Could not import fastcheck, was it built with Cython?")
+    print("You may try building it with: python setup.py build_ext --inplace")
+    print("and re-installing the package.")
+    print("Using slower check function.")
 
 
 class GameFinished(Exception):

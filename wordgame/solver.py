@@ -88,13 +88,13 @@ def main():
         "fast": Treshold.FAST,
     }[args.mode]
 
+    n_trials = 100
+    trials = SOLUTIONS[:n_trials]
     n_guesses = []
     n_failed = 0
-
     start_time = time.time()
-    ntotal = len(SOLUTIONS)
-    for i, soln in enumerate(SOLUTIONS):
-        print(f"solving game {i} of {ntotal} ({soln})")
+    for i, soln in enumerate(trials):
+        print(f"Solving game {i} of {n_trials} ({soln}).")
         game = Game(solution=soln)
         solver = Solver(game)
         while game.state == State.OPEN:
