@@ -23,8 +23,6 @@ KEY_COLORS = {
     LetterState.UNKNOWN: Colors.DEFAULT,
 }
 
-FONT = "Helvetica"
-
 XSCALE = 2
 YSCALE = 2
 
@@ -70,8 +68,8 @@ class GameWidget:
         self.invalid_guess = False
         self.input_cells = {}
 
-        self.letter_font = Font(family=FONT, size=18)
-        self.keyboard_font = Font(family=FONT, size=10)
+        self.letter_font = Font(size=18)
+        self.keyboard_font = Font(size=10)
 
     def reset_guess(self):
         self.current_guess = [" "] * 5
@@ -327,7 +325,7 @@ def main():
 
     menu = Frame(root)
     button_row = 0
-    button_font = Font(family=FONT, size=12)
+    button_font = Font(size=12)
     button_width = sx(12)
 
     def menu_button(text, command):
@@ -353,9 +351,9 @@ def main():
 
     # Title
     title = Frame(root)
-    title_canvas = Canvas(title, width=sx(200), height=sy(50))
+    title_canvas = Canvas(title, width=sx(400), height=sy(50))
     title_canvas.create_text(
-        sx(100), sy(30), text="Untitled Word Game", font=Font(family=FONT, size=30)
+        sx(200), sy(30), text="Untitled Word Game", font=Font(size=30)
     )
     title_canvas.pack()
 
