@@ -19,7 +19,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install cython pyinstaller
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Build cython libs
       run: |
         python setup.py build_ext --inplace
@@ -43,7 +42,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install cython pyinstaller
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Build cython libs
       run: |
         python setup.py build_ext --inplace
