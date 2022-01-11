@@ -11,6 +11,10 @@
 
 ## Install from source
 
+### Requirements
+- Python 3.8+
+- pip
+
 ### Optional - compile fastcheck
 
 If Cython is installed, the fastcheck.pyx module can be compiled, which makes the
