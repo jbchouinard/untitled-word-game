@@ -15,7 +15,7 @@ setup(
     author_email="me@jbchouinard.net",
     description="Word game and solver.",
     packages=find_packages(),
-    install_requires=["setuptools"],
+    install_requires=[],
     entry_points={
         "console_scripts": [
             "word-game = wordgame.gui:main",
