@@ -1,3 +1,7 @@
+[![Python application](https://github.com/jbchouinard/untitled-word-game/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/jbchouinard/untitled-word-game/actions/workflows/python-app.yml)
+
+# Untitled Word Game
+
 ![Screenshot of the game](screenshot.png?raw=true "Untitled Word Game")
 
 ## Installation
