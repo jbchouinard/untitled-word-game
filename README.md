@@ -2,6 +2,8 @@
 
 Word guessing game and solver.
 
+![Screenshot of the game](screenshot.png?raw=true "Untitled Word Game")
+
 ## Installation
 
 ### Optional - compile fastcheck
