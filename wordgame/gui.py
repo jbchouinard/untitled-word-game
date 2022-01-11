@@ -278,7 +278,7 @@ class GameWidget:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--solution", default=None)
-    parser.add_argument("--tries", default=5, type=int)
+    parser.add_argument("--tries", default=6, type=int)
     args = parser.parse_args()
 
     root = Tk()

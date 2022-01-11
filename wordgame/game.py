@@ -67,7 +67,7 @@ class LetterState:
 
 
 class Game:
-    def __init__(self, tries=5, solution=None):
+    def __init__(self, tries=6, solution=None):
         self.tries = tries
         self.solution = solution if solution else random.choice(SOLUTIONS)
         self.guesses = []
