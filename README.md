@@ -4,7 +4,12 @@
 
 ![Screenshot of the game](screenshot.png?raw=true "Untitled Word Game")
 
-## Installation
+## Download
+- [Linux (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v1.0.0/word-game-linux.zip)
+- [MacOS (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v1.0.0/word-game-macos.zip)
+- [Windows (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v1.0.0/word-game-windows.zip)
+
+## Install from source
 
 ### Optional - compile fastcheck
 
@@ -22,7 +27,7 @@ python setup.py build_ext --inplace
 pip install .
 ```
 
-## Usage
+### Usage
 
 Play game:
 
