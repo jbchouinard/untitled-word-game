@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name="wordgame",
-    version="1.0.0",
+    version="1.0.1",
     url="https://github.com/jbchouinard/untitled-word-game.git",
     author="Jerome Boisvert-Chouinard",
     author_email="me@jbchouinard.net",
