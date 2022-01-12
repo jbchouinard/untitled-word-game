@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 
 try:
     from Cython.Build import cythonize
+
     ext_modules = cythonize("wordgame/fastcheck.pyx")
 except ImportError:
     print("cython not found, will use slow check function")

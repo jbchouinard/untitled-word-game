@@ -102,3 +102,4 @@ ENV/
 
 .vscode
 wordgame/fastcheck.c
+.ccls-cache

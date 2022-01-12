@@ -77,22 +77,24 @@ def main():
     n_guesses = []
     n_failed = 0
     start_time = time.time()
-    for i, soln in enumerate(trials):
-        print(f"Solving game {i} of {n_trials} ({soln}).")
+    for i, soln in enumerate(trials, 1):
         game = Game(solution=soln)
         solver = Solver(game)
         while game.state == State.OPEN:
             solver.guess()
         n = len(game.guesses)
         if game.state == State.SOLVED:
+            print(f"{i}/{n_trials} Solved {soln} in {n} guesses.")
             n_guesses.append(n)
         else:
+            print(f"{i}/{n_trials} Failed to solve {soln}.")
             n_failed += 1
 
     elapsed = time.time() - start_time
     avg = sum(n_guesses) / len(n_guesses)
     avg_ms = 1000 * (elapsed / len(n_guesses))
-    print(f"Failed to solve {n_failed} puzzles.")
+    if n_failed:
+        print(f"Failed to solve {n_failed} puzzles.")
     print(
         (
             f"Solved puzzles in average of {avg:.2f} guesses in {avg_ms:.1f}ms, "
