@@ -27,14 +27,16 @@ def make_word_list(in_file, out_file, letter_count):
         f.write("WORDS=[\n")
         for word in words:
             f.write(f"    '{word}',\n")
-        f.write("]")
+        f.write("]\n")
 
 
 if __name__ == "__main__":
+    make_word_list("scrabble.txt", "scrabble4.py", 4)
     make_word_list("scrabble.txt", "scrabble5.py", 5)
     make_word_list("scrabble.txt", "scrabble6.py", 6)
     make_word_list("scrabble.txt", "scrabble7.py", 7)
     make_word_list("scrabble.txt", "scrabble8.py", 8)
+    make_word_list("dictionary.txt", "dictionary4.py", 4)
     make_word_list("dictionary.txt", "dictionary5.py", 5)
     make_word_list("dictionary.txt", "dictionary6.py", 6)
     make_word_list("dictionary.txt", "dictionary7.py", 7)

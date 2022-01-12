@@ -78,8 +78,8 @@ class GameWidget:
     # Keyboard geometry
     keys_width = sx(20)
     keys_height = sy(20)
-    keys_x_pad = sx(5)
-    keys_y_pad = sy(5)
+    keys_x_pad = sx(4)
+    keys_y_pad = sy(4)
     keys_x0 = sx(5)
     keys_y0 = sy(5)
 
@@ -131,7 +131,7 @@ class GameWidget:
             self.keys_canvas = None
         h, w = self._compute_canvas_size(1, self.letter_count + 1)
         self.keys_canvas = Canvas(self.keys_frame, width=w + sx(100), height=h + sx(20))
-        self.keys_canvas.pack(anchor=SE)
+        self.keys_canvas.pack(anchor=SW)
 
     def get_coords(self, row, col):
         """Get x, y coords for box at position row, column"""
