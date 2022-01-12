@@ -43,7 +43,7 @@ word-game
 Run solver benchmark:
 
 ```bash
-word-solver-benchmark [best|good|fast]
+word-solver-benchmark
 ```
 
 ## Strategy
