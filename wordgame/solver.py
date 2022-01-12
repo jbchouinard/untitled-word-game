@@ -12,7 +12,7 @@ class Solver:
         # Take into account pre-existing guesses on the game
         for (guess, response) in game.guesses:
             self.first_guess = False
-            self.filter_solutions(self.possible_solutions, guess, response)
+            self.filter_solutions(guess, response)
 
     def filter_solutions(self, guess, response):
         self.possible_solutions = [
@@ -51,7 +51,7 @@ class Solver:
         else:
             guess = self.find_guess()
         response = self.game.guess(guess)
-        self.filter_solutions(self.possible_solutions, guess, response)
+        self.filter_solutions(guess, response)
 
 
 def main():
