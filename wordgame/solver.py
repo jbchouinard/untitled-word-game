@@ -9,54 +9,39 @@ class Solver:
         self.game = game
         self.possible_solutions = SOLUTIONS[:]
         self.first_guess = True
-        if game.guesses:
+        # Take into account pre-existing guesses on the game
+        for (guess, response) in game.guesses:
             self.first_guess = False
-            for (guess, response) in game.guesses:
-                self.possible_solutions = self.filter_solutions(
-                    self.possible_solutions, guess, response
-                )
-        else:
-            self.first_guess = True
+            self.filter_solutions(self.possible_solutions, guess, response)
 
-    def filter_solutions(self, solns, guess, response):
-        kept = []
-        for soln in solns:
-            if check(guess, soln) == response:
-                kept.append(soln)
-        return kept
+    def filter_solutions(self, guess, response):
+        self.possible_solutions = [
+            soln for soln in self.possible_solutions if check(guess, soln) == response
+        ]
 
     def find_guess(self):
         best_guess = VALID_GUESSES[0]
-        best_n = len(self.possible_solutions)
-        if best_n == 1:
-            return self.possible_solutions[0]
-        for i, guess in enumerate(VALID_GUESSES, 1):
-            expected_n = self.compute_expected_n_solns(guess)
+        best_score = self.compute_score(best_guess)
+        for guess in VALID_GUESSES[1:]:
+            score = self.compute_score(guess)
             # Favor a guess which is a potential solution
             if (
-                expected_n == best_n
-                and best_guess not in self.possible_solutions
+                score == best_score
                 and guess in self.possible_solutions
+                and best_guess not in self.possible_solutions
             ):
                 best_guess = guess
-            elif expected_n < best_n:
-                best_guess = guess
-                best_n = expected_n
+            elif score < best_score:
+                best_guess, best_score = guess, score
         return best_guess
 
-    def compute_expected_n_solns(self, guess):
+    def compute_score(self, guess):
         results = defaultdict(lambda: 0)
         for soln in self.possible_solutions:
             response = check(guess, soln)
             results[response] += 1
 
-        summ = 0
-        count = 0
-        for n in results.values():
-            summ += n * n
-            count += n
-
-        return summ / count
+        return sum(n ** 2 for n in results.values())
 
     def guess(self):
         # Precomputed best first move
@@ -66,9 +51,7 @@ class Solver:
         else:
             guess = self.find_guess()
         response = self.game.guess(guess)
-        self.possible_solutions = self.filter_solutions(
-            self.possible_solutions, guess, response
-        )
+        self.filter_solutions(self.possible_solutions, guess, response)
 
 
 def main():

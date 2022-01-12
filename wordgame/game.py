@@ -53,9 +53,9 @@ SOLUTIONS = VALID_GUESSES[:2315]
 
 
 class State:
-    OPEN = "open"
-    SOLVED = "solved"
-    FAILED = "failed"
+    OPEN = 0
+    SOLVED = 1
+    FAILED = 2
 
 
 class LetterState:
