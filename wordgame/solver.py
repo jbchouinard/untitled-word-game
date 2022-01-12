@@ -1,13 +1,7 @@
-import argparse
 import time
+from collections import defaultdict
 
-from wordgame.game import check, VALID_GUESSES, SOLUTIONS
-
-
-class Treshold:
-    BEST = 0
-    GOOD = 1 / 8
-    FAST = 1 / 4
+from wordgame.game import check, Game, State, VALID_GUESSES, SOLUTIONS
 
 
 class Solver:
@@ -31,15 +25,13 @@ class Solver:
                 kept.append(soln)
         return kept
 
-    def find_guess(self, treshold):
+    def find_guess(self):
         best_guess = VALID_GUESSES[0]
         best_n = len(self.possible_solutions)
         if best_n == 1:
             return self.possible_solutions[0]
         for i, guess in enumerate(VALID_GUESSES, 1):
             expected_n = self.compute_expected_n_solns(guess)
-            if expected_n <= len(self.possible_solutions) * treshold:
-                return guess
             # Favor a guess which is a potential solution
             if (
                 expected_n == best_n
@@ -53,22 +45,26 @@ class Solver:
         return best_guess
 
     def compute_expected_n_solns(self, guess):
-        ns = []
+        results = defaultdict(lambda: 0)
         for soln in self.possible_solutions:
             response = check(guess, soln)
-            left = self.filter_solutions(
-                self.possible_solutions, guess, response
-            )
-            ns.append(len(left))
-        return sum(ns) / len(ns)
+            results[response] += 1
 
-    def guess(self, treshold=0.5):
+        summ = 0
+        count = 0
+        for n in results.values():
+            summ += n * n
+            count += n
+
+        return summ / count
+
+    def guess(self):
         # Precomputed best first move
         if self.first_guess:
-            guess = "soare"
+            guess = "tares"
             self.first_guess = False
         else:
-            guess = self.find_guess(treshold)
+            guess = self.find_guess()
         response = self.game.guess(guess)
         self.possible_solutions = self.filter_solutions(
             self.possible_solutions, guess, response
@@ -76,19 +72,7 @@ class Solver:
 
 
 def main():
-    from wordgame.game import Game, State, SOLUTIONS
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=["best", "good", "fast"])
-    args = parser.parse_args()
-
-    treshold = {
-        "best": Treshold.BEST,
-        "good": Treshold.GOOD,
-        "fast": Treshold.FAST,
-    }[args.mode]
-
-    n_trials = 100
+    n_trials = 2315
     trials = SOLUTIONS[:n_trials]
     n_guesses = []
     n_failed = 0
@@ -98,7 +82,7 @@ def main():
         game = Game(solution=soln)
         solver = Solver(game)
         while game.state == State.OPEN:
-            solver.guess(treshold)
+            solver.guess()
         n = len(game.guesses)
         if game.state == State.SOLVED:
             n_guesses.append(n)
@@ -107,16 +91,15 @@ def main():
 
     elapsed = time.time() - start_time
     avg = sum(n_guesses) / len(n_guesses)
-    avg_secs = elapsed / len(n_guesses)
-    if n_failed:
-        print(f"Failed to solve {n_failed} puzzles.")
+    avg_ms = 1000 * (elapsed / len(n_guesses))
+    print(f"Failed to solve {n_failed} puzzles.")
     print(
         (
-            f"Solved puzzles in average of {avg:.2f} guesses, "
-            f"max of {max(n_guesses):d} guesses, average of {avg_secs:.3f} seconds/puzzle"
+            f"Solved puzzles in average of {avg:.2f} guesses in {avg_ms:.1f}ms, "
+            f"max of {max(n_guesses):d} guesses."
         )
     )
-    with open("n_guesses_{}.txt".format(args.mode), "w") as f:
+    with open("n_guesses.txt", "w") as f:
         f.write(",".join((str(n) for n in n_guesses)))
 
 

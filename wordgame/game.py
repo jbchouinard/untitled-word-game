@@ -6,33 +6,32 @@ from wordgame.words import WORDS
 
 try:
     from wordgame.fastcheck import check
+
     print("Using fastcheck.")
 except ImportError:
 
     def check(guess, solution):
-        correct = []
-        at_least = [0] * 26
-        at_most = [5] * 26
-        letters_count_guess = defaultdict(lambda: 0)
-        letters_count_actual = defaultdict(lambda: 0)
-        for i, (letter_guessed, letter_actual) in enumerate(
-            zip(guess, solution)
-        ):
-            if letter_actual == letter_guessed:
-                correct.append(i)
-            else:
-                letters_count_guess[letter_guessed] += 1
-                letters_count_actual[letter_actual] += 1
+        result = []
+        count_nonexact_guess = defaultdict(lambda: 0)
+        count_nonexact_solution = defaultdict(lambda: 0)
 
-        for letter, count_guess in letters_count_guess.items():
-            count_actual = letters_count_actual[letter]
-            if count_guess > count_actual:
-                at_most[ord(letter) - 97] = count_actual
-                at_least[ord(letter) - 97] = count_actual
-            else:
-                at_least[ord(letter) - 97] = count_guess
+        for (letter_solution, letter_guess) in zip(solution, guess):
+            if letter_solution != letter_guess:
+                count_nonexact_solution[letter_solution] += 1
 
-        return correct, at_least, at_most
+        for (letter_solution, letter_guess) in zip(solution, guess):
+            if letter_solution == letter_guess:
+                result.append(LetterState.EXACT)
+            elif (
+                count_nonexact_guess[letter_guess]
+                < count_nonexact_solution[letter_guess]
+            ):
+                result.append(LetterState.SOME)
+                count_nonexact_guess[letter_guess] += 1
+            else:
+                result.append(LetterState.NONE)
+
+        return tuple(result)
 
     print("Could not import fastcheck, was it built with Cython?")
     print("You may try building it with: python setup.py build_ext --inplace")
@@ -60,10 +59,10 @@ class State:
 
 
 class LetterState:
-    EXACT = "exact"
-    SOME = "some"
-    NONE = "none"
-    UNKNOWN = "unknown"
+    UNKNOWN = 0
+    EXACT = 1
+    SOME = 2
+    NONE = 3
 
 
 class Game:
@@ -96,15 +95,15 @@ class Game:
     def letter_states(self):
         states = defaultdict(lambda: LetterState.UNKNOWN)
         for (guess, response) in self.guesses:
-            correct, at_least, at_most = response
-            for i, letter in enumerate(guess):
-                if states[letter] in (LetterState.EXACT, LetterState.NONE):
+            for (letter, rstate) in zip(guess, response):
+                lstate = states[letter]
+                if lstate == LetterState.EXACT:
                     continue
-                if i in correct:
-                    states[letter] = LetterState.EXACT
-                elif at_least[ord(letter) - 97] > 0:
-                    states[letter] = LetterState.SOME
+                elif rstate == LetterState.EXACT:
+                    states[letter] = rstate
+                elif lstate == LetterState.SOME:
+                    continue
                 else:
-                    states[letter] = LetterState.NONE
+                    states[letter] = rstate
 
         return states

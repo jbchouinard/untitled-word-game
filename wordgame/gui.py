@@ -4,7 +4,7 @@ from tkinter import Tk, Canvas, Frame, Button, N, E
 from tkinter.font import Font
 
 from wordgame.game import Game, InvalidGuess, State, LetterState
-from wordgame.solver import Solver, Treshold
+from wordgame.solver import Solver
 
 
 class Colors:
@@ -25,6 +25,35 @@ KEY_COLORS = {
 
 XSCALE = 2
 YSCALE = 2
+
+LETTERS_BY_FREQUENCY = [
+    "e",
+    "a",
+    "r",
+    "o",
+    "t",
+    "l",
+    "i",
+    "s",
+    "n",
+    "c",
+    "u",
+    "y",
+    "d",
+    "h",
+    "p",
+    "m",
+    "g",
+    "b",
+    "f",
+    "k",
+    "w",
+    "v",
+    "z",
+    "x",
+    "q",
+    "j",
+]
 
 
 def sx(x):
@@ -96,9 +125,7 @@ class GameWidget:
             self.kb_canvas.destroy()
             self.kb_canvas = None
         h, w = self._compute_canvas_size(1, 6)
-        self.kb_canvas = Canvas(
-            self.kb_frame, width=w + sx(100), height=h + sx(20)
-        )
+        self.kb_canvas = Canvas(self.kb_frame, width=w + sx(100), height=h + sx(20))
         self.kb_canvas.pack()
 
     def get_coords(self, row, col):
@@ -136,8 +163,7 @@ class GameWidget:
 
     def draw_keyboard(self):
         states = self.game.letter_states()
-        for i in range(0, 26):
-            letter = chr(i + 97)
+        for (i, letter) in enumerate(LETTERS_BY_FREQUENCY):
             row = i // 13
             col = i % 13
             color = KEY_COLORS[states[letter]]
@@ -172,19 +198,8 @@ class GameWidget:
 
     def draw_previous_guess(self, i):
         guess, response = self.game.guesses[i]
-        _, at_least, _ = response
-        at_least_count = [0] * 26
-        for j, letter in enumerate(guess):
-            color = Colors.DEFAULT
-            if letter == self.game.solution[j]:
-                color = Colors.CORRECT
-            else:
-                idx = ord(letter) - 97
-                if at_least_count[idx] < at_least[idx]:
-                    color = Colors.MISPLACED
-                    at_least_count[idx] += 1
-
-            self.draw_letterbox(i, j, letter=letter, color=color)
+        for j, (letter, state) in enumerate(zip(guess, response)):
+            self.draw_letterbox(i, j, letter=letter, color=KEY_COLORS[state])
 
     def draw(self):
         self.canvas.delete("all")
@@ -312,16 +327,13 @@ def main():
         game_widget.show_solution = True
         game_widget.draw()
 
-    def solve(treshold):
-        def solve_f():
-            game = game_widget.game
-            if game_widget.button_ok:
-                game_widget.button_ok.destroy()
-            solver = Solver(game)
-            solver.guess(treshold)
-            game_widget.draw()
-
-        return solve_f
+    def solve():
+        game = game_widget.game
+        if game_widget.button_ok:
+            game_widget.button_ok.destroy()
+        solver = Solver(game)
+        solver.guess()
+        game_widget.draw()
 
     menu = Frame(root)
     button_row = 0
@@ -344,9 +356,7 @@ def main():
     menu_button("RESTART", restart)
     menu_button("UNDO", undo)
     menu_button("GIVE UP", show_solution)
-    menu_button("SOLVER (FAST/BAD)", solve(Treshold.FAST))
-    menu_button("SOLVER (MEDIUM/GOOD)", solve(Treshold.GOOD))
-    menu_button("SOLVER (SLOW/BEST)", solve(Treshold.BEST))
+    menu_button("SOLVER", solve)
     menu_button("QUIT", lambda: sys.exit(0))
 
     # Title
