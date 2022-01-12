@@ -1,7 +1,7 @@
 import random
 from collections import defaultdict
 
-from wordgame.words import WORDS
+from wordgame.words import WORD_SETS
 
 
 try:
@@ -10,7 +10,7 @@ try:
     print("Using fastcheck.")
 except ImportError:
 
-    def check(guess, solution):
+    def check(guess, solution, _letter_count):
         result = []
         count_nonexact_guess = defaultdict(lambda: 0)
         count_nonexact_solution = defaultdict(lambda: 0)
@@ -47,11 +47,6 @@ class InvalidGuess(Exception):
     pass
 
 
-VALID_GUESSES = WORDS
-VALID_GUESSES_SET = set(WORDS)
-SOLUTIONS = VALID_GUESSES[:2315]
-
-
 class State:
     OPEN = 0
     SOLVED = 1
@@ -66,17 +61,19 @@ class LetterState:
 
 
 class Game:
-    def __init__(self, tries=6, solution=None):
+    def __init__(self, wordset, tries=6, solution=None):
+        self.wordset = wordset
         self.tries = tries
-        self.solution = solution if solution else random.choice(SOLUTIONS)
+        self.solution = solution if solution else random.choice(wordset.solutions)
         self.guesses = []
 
     def guess(self, guess):
         if self.state != State.OPEN:
             raise GameFinished()
-        if guess not in VALID_GUESSES_SET:
-            raise InvalidGuess()
-        response = check(guess, self.solution)
+        if guess not in self.wordset.words_set:
+            print(self.wordset.words_set)
+            raise InvalidGuess(guess)
+        response = check(guess, self.solution, self.wordset.letter_count)
         self.guesses.append((guess, response))
         return response
 

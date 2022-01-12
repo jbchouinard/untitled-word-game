@@ -1,13 +1,15 @@
+import argparse
 import time
 from collections import defaultdict
 
-from wordgame.game import check, Game, State, VALID_GUESSES, SOLUTIONS
+from wordgame.game import check, Game, State
+from wordgame.words import WORD_SETS
 
 
 class Solver:
     def __init__(self, game):
         self.game = game
-        self.possible_solutions = SOLUTIONS[:]
+        self.possible_solutions = game.wordset.solutions[:]
         self.first_guess = True
         # Take into account pre-existing guesses on the game
         for (guess, response) in game.guesses:
@@ -16,13 +18,15 @@ class Solver:
 
     def filter_solutions(self, guess, response):
         self.possible_solutions = [
-            soln for soln in self.possible_solutions if check(guess, soln) == response
+            soln
+            for soln in self.possible_solutions
+            if check(guess, soln, self.game.wordset.letter_count) == response
         ]
 
     def find_guess(self):
-        best_guess = VALID_GUESSES[0]
+        best_guess = self.game.wordset.words[0]
         best_score = self.compute_score(best_guess)
-        for guess in VALID_GUESSES[1:]:
+        for guess in self.game.wordset.words[1:]:
             score = self.compute_score(guess)
             # Favor a guess which is a potential solution
             if (
@@ -38,7 +42,7 @@ class Solver:
     def compute_score(self, guess):
         results = defaultdict(lambda: 0)
         for soln in self.possible_solutions:
-            response = check(guess, soln)
+            response = check(guess, soln, self.game.wordset.letter_count)
             results[response] += 1
 
         return sum(n ** 2 for n in results.values())
@@ -46,7 +50,7 @@ class Solver:
     def guess(self):
         # Precomputed best first move
         if self.first_guess:
-            guess = "tares"
+            guess = self.game.wordset.first_guess
             self.first_guess = False
         else:
             guess = self.find_guess()
@@ -55,13 +59,19 @@ class Solver:
 
 
 def main():
-    n_trials = 2315
-    trials = SOLUTIONS[:n_trials]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-w", "--words", choices=WORD_SETS.keys(), default="wordle")
+    args = parser.parse_args()
+
+    wordset = WORD_SETS[args.words]
+
+    n_trials = len(wordset.solutions)
+    trials = wordset.solutions
     n_guesses = []
     n_failed = 0
     start_time = time.time()
     for i, soln in enumerate(trials, 1):
-        game = Game(solution=soln)
+        game = Game(wordset, solution=soln)
         solver = Solver(game)
         while game.state == State.OPEN:
             solver.guess()
