@@ -22,10 +22,7 @@ except ImportError:
         for (letter_solution, letter_guess) in zip(solution, guess):
             if letter_solution == letter_guess:
                 result.append(LetterState.EXACT)
-            elif (
-                count_nonexact_guess[letter_guess]
-                < count_nonexact_solution[letter_guess]
-            ):
+            elif count_nonexact_guess[letter_guess] < count_nonexact_solution[letter_guess]:
                 result.append(LetterState.SOME)
                 count_nonexact_guess[letter_guess] += 1
             else:
@@ -71,7 +68,6 @@ class Game:
         if self.state != State.OPEN:
             raise GameFinished()
         if guess not in self.wordset.words_set:
-            print(self.wordset.words_set)
             raise InvalidGuess(guess)
         response = check(guess, self.solution, self.wordset.letter_count)
         self.guesses.append((guess, response))

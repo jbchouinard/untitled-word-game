@@ -41,16 +41,19 @@ class WordSet:
         return self._solutions_set
 
 
-WORD_SETS = {s.name: s for s in [
-    WordSet("wordle", 5, 2315, "tares"),
-    WordSet("scrabble4", 4, 2000, "sale"),
-    WordSet("scrabble5", 5, 2000, "tares"),
-    WordSet("scrabble6", 6, 3000, "salter"),
-    WordSet("scrabble7", 7, 4000, "saltier"),
-    WordSet("scrabble8", 8, 5000, "notaries"),
-    WordSet("dictionary4", 4, 2000, "sale"),
-    WordSet("dictionary5", 5, 2000, "tares"),
-    WordSet("dictionary6", 6, 3000, "salter"),
-    WordSet("dictionary7", 7, 4000, "saltier"),
-    WordSet("dictionary8", 8, 5000, "notaries"),
-]}
+WORD_SETS = {
+    s.name: s
+    for s in [
+        WordSet("wordle", 5, 2315, "tares"),
+        WordSet("scrabble4", 4, 2000, "sale"),
+        WordSet("scrabble5", 5, 2000, "tares"),
+        WordSet("scrabble6", 6, 3000, "salter"),
+        WordSet("scrabble7", 7, 4000, "saltier"),
+        WordSet("scrabble8", 8, 5000, "notaries"),
+        WordSet("dictionary4", 4, 2000, "sale"),
+        WordSet("dictionary5", 5, 2000, "tares"),
+        WordSet("dictionary6", 6, 3000, "salter"),
+        WordSet("dictionary7", 7, 4000, "saltier"),
+        WordSet("dictionary8", 8, 5000, "notaries"),
+    ]
+}

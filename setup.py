@@ -9,8 +9,8 @@ except ImportError:
     ext_modules = []
 
 setup(
-    name="wordgame",
-    version="2.0.0",
+    name="untitled-word-game",
+    version="3.0.0",
     url="https://github.com/jbchouinard/untitled-word-game.git",
     author="Jerome Boisvert-Chouinard",
     author_email="me@jbchouinard.net",

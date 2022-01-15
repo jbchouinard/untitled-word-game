@@ -1,6 +1,5 @@
-import argparse
 import sys
-from tkinter import *
+from tkinter import Button, Canvas, E, Frame, HORIZONTAL, IntVar, N, Scale, StringVar, SW, Tk
 from tkinter.ttk import Combobox
 from tkinter.font import Font
 
@@ -102,9 +101,7 @@ class GameWidget:
         self.keyboard_font = Font(size=10)
 
     def create_game(self):
-        return Game(
-            tries=self.n_tries_var.get(), wordset=WORD_SETS[self.word_set_var.get()]
-        )
+        return Game(tries=self.n_tries_var.get(), wordset=WORD_SETS[self.word_set_var.get()])
 
     @property
     def letter_count(self):
@@ -221,9 +218,7 @@ class GameWidget:
         self.draw_keys()
 
     def on_entry_click(self, event):
-        self.current_cell = self.input_cells[
-            event.widget.find_closest(event.x, event.y)[0]
-        ]
+        self.current_cell = self.input_cells[event.widget.find_closest(event.x, event.y)[0]]
         self.draw_input_cells()
 
     def input_char(self, char):
@@ -320,11 +315,7 @@ class GameWidget:
 
         def menu_button(text, command):
             button = Button(
-                self.menu_frame,
-                text=text,
-                width=button_width,
-                font=button_font,
-                command=command,
+                self.menu_frame, text=text, width=button_width, font=button_font, command=command
             )
             menu_grid(button)
 
