@@ -5,10 +5,10 @@
 ![Screenshot of the game](screenshot.png?raw=true "Untitled Word Game")
 
 ## Download
-- [Arch Linux (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v2.0.0/word-game-archlinux.zip)
-- [Ubuntu (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v2.0.0/word-game-linux.zip)
-- [MacOS (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v2.0.0/word-game-macos.zip)
-- [Windows (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v2.0.0/word-game-windows.zip)
+- [Arch Linux (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v3.0.0/word-game-archlinux.zip)
+- [Ubuntu (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v3.0.0/word-game-linux.zip)
+- [MacOS (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v3.0.0/word-game-macos.zip)
+- [Windows (64 bits)](https://github.com/jbchouinard/untitled-word-game/releases/download/v3.0.0/word-game-windows.zip)
 
 ## Install from source
 
