@@ -94,8 +94,6 @@ def main():
             f"max of {max(n_guesses):d} guesses."
         )
     )
-    with open("n_guesses.txt", "w") as f:
-        f.write(",".join((str(n) for n in n_guesses)))
 
 
 if __name__ == "__main__":

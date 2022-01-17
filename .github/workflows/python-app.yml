@@ -24,7 +24,7 @@ jobs:
         python setup.py build_ext --inplace
     - name: Package
       run: |
-        pyinstaller -F --windowed word-game.py
+        pyinstaller --collect-all wordgame -F --windowed word-game.py
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.3.1
       with:
@@ -47,7 +47,7 @@ jobs:
         python setup.py build_ext --inplace
     - name: Package
       run: |
-        pyinstaller -F --windowed word-game.py
+        pyinstaller --collect-all wordgame -F --windowed word-game.py
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.3.1
       with:
@@ -70,7 +70,7 @@ jobs:
         python setup.py build_ext --inplace
     - name: Package
       run: |
-        pyinstaller -F --windowed word-game.py
+        pyinstaller --collect-all wordgame -F --windowed word-game.py
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.3.1
       with:

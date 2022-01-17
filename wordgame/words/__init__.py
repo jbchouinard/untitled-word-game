@@ -42,18 +42,15 @@ class WordSet:
 
 
 WORD_SETS = {
-    s.name: s
-    for s in [
-        WordSet("wordle", 5, 2315, "tares"),
-        WordSet("scrabble4", 4, 2000, "sale"),
-        WordSet("scrabble5", 5, 2000, "tares"),
-        WordSet("scrabble6", 6, 3000, "salter"),
-        WordSet("scrabble7", 7, 4000, "saltier"),
-        WordSet("scrabble8", 8, 5000, "notaries"),
-        WordSet("dictionary4", 4, 2000, "sale"),
-        WordSet("dictionary5", 5, 2000, "tares"),
-        WordSet("dictionary6", 6, 3000, "salter"),
-        WordSet("dictionary7", 7, 4000, "saltier"),
-        WordSet("dictionary8", 8, 5000, "notaries"),
-    ]
+    "wordle": WordSet("wordle", 5, 2315, "tares"),
+    "scrabble (5 letters)": WordSet("scrabble5", 5, 2000, "tares"),
+    "dictionary (5 letters)": WordSet("dictionary5", 5, 2000, "tares"),
+    "scrabble (4 letters)": WordSet("scrabble4", 4, 2000, "sale"),
+    "scrabble (6 letters)": WordSet("scrabble6", 6, 3000, "salter"),
+    "scrabble (7 letters)": WordSet("scrabble7", 7, 4000, "saltier"),
+    "scrabble (8 letters)": WordSet("scrabble8", 8, 5000, "notaries"),
+    "dictionary (4 letters)": WordSet("dictionary4", 4, 2000, "sale"),
+    "dictionary (6 letters)": WordSet("dictionary6", 6, 3000, "salter"),
+    "dictionary (7 letters)": WordSet("dictionary7", 7, 4000, "saltier"),
+    "dictionary (8 letters)": WordSet("dictionary8", 8, 5000, "notaries"),
 }

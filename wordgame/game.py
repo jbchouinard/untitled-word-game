@@ -1,13 +1,14 @@
 import random
 from collections import defaultdict
 
+from wordgame import eprint
 from wordgame.words import WORD_SETS
 
 
 try:
     from wordgame.fastcheck import check
 
-    print("Using fastcheck.")
+    eprint("Using compiled fastcheck.")
 except ImportError:
 
     def check(guess, solution, _letter_count):
@@ -30,10 +31,12 @@ except ImportError:
 
         return tuple(result)
 
-    print("Could not import fastcheck, was it built with Cython?")
-    print("You may try building it with: python setup.py build_ext --inplace")
-    print("and re-installing the package.")
-    print("Using slower check function.")
+    eprint(
+        "Could not import fastcheck, was it built with Cython?\n"
+        "You may try building it with: python setup.py build_ext --inplace\n"
+        "and re-installing the package.\n"
+        "Using slower check function."
+    )
 
 
 class GameFinished(Exception):
@@ -84,6 +87,10 @@ class Game:
             return State.OPEN
         else:
             return State.FAILED
+
+    @property
+    def is_finished(self):
+        return self.state != State.OPEN
 
     def letter_states(self):
         states = defaultdict(lambda: LetterState.UNKNOWN)

@@ -11,7 +11,7 @@ venv/bin/word-game: venv wordgame/fastcheck.c
 	venv/bin/pip install .
 
 dist/word-game: venv wordgame/fastcheck.c
-	venv/bin/pyinstaller -F --windowed word-game.py
+	venv/bin/pyinstaller --collect-all wordgame -F --windowed word-game.py
 
 clean:
 	rm -f wordgame/fastcheck.c wordgame/fastcheck.*.so *.spec

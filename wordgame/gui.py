@@ -1,9 +1,20 @@
 import sys
-from tkinter import Button, Canvas, E, Frame, HORIZONTAL, IntVar, N, Scale, StringVar, SW, Tk
-from tkinter.ttk import Combobox
+from tkinter import (
+    Button,
+    Canvas,
+    E,
+    Frame,
+    HORIZONTAL,
+    IntVar,
+    N,
+    OptionMenu,
+    StringVar,
+    SW,
+    Tk,
+)
 from tkinter.font import Font
 
-from wordgame.game import Game, InvalidGuess, State, LetterState
+from wordgame.game import Game, InvalidGuess, LetterState
 from wordgame.solver import Solver
 from wordgame.words import WORD_SETS
 
@@ -93,9 +104,8 @@ class GameWidget:
 
         self.reset_guess()
         self.current_cell = 0
-        self.button_ok = None
         self.invalid_guess = False
-        self.input_cells = {}
+        self.input_cells = []
 
         self.letter_font = Font(size=18)
         self.keyboard_font = Font(size=10)
@@ -148,11 +158,11 @@ class GameWidget:
         x1 = x0 + self.width
         y1 = y0 + self.height
 
-        box = self.guesses_canvas.create_rectangle(x0, y0, x1, y1, fill=color)
-        self.guesses_canvas.create_text(
+        box_id = self.guesses_canvas.create_rectangle(x0, y0, x1, y1, fill=color)
+        text_id = self.guesses_canvas.create_text(
             (x0 + x1) / 2, (y0 + y1) / 2, text=letter, font=self.letter_font
         )
-        return box
+        return box_id, text_id
 
     def draw_key(self, row, col, letter, color):
         x0, y0 = self.get_keys_coords(row, col)
@@ -174,23 +184,30 @@ class GameWidget:
     def submit_guess(self):
         try:
             self.game.guess("".join(self.current_guess))
+            self.reset_guess()
         except InvalidGuess:
             self.invalid_guess = True
-        self.reset_guess()
 
     def draw_input_cells(self):
-        if self.input_cells:
-            for entry in self.input_cells.keys():
-                self.guesses_canvas.delete(entry)
-        self.input_cells = {}
+        for box_id, text_id in self.input_cells:
+            self.guesses_canvas.delete(box_id)
+            self.guesses_canvas.delete(text_id)
+
+        self.input_cells = []
         i = len(self.game.guesses)
         unselected = Colors.WRONG if self.invalid_guess else Colors.DEFAULT
-        for j in range(self.letter_count):
+        for j in range(self.letter_count + 1):
             color = Colors.SELECTED if j == self.current_cell else unselected
-            letter = self.current_guess[j]
-            id = self.draw_letterbox(i, j, color=color, letter=letter)
-            self.guesses_canvas.tag_bind(id, "<ButtonPress-1>", self.on_entry_click)
-            self.input_cells[id] = j
+
+            if j == self.letter_count:
+                letter = "⏎"
+            else:
+                letter = self.current_guess[j]
+
+            box_id, text_id = self.draw_letterbox(i, j, color=color, letter=letter)
+            self.input_cells.append((box_id, text_id))
+            self.guesses_canvas.tag_bind(box_id, "<ButtonPress-1>", self.on_input_cell_click(j))
+            self.guesses_canvas.tag_bind(text_id, "<ButtonPress-1>", self.on_input_cell_click(j))
 
     def draw_previous_guess(self, i):
         guess, response = self.game.guesses[i]
@@ -200,49 +217,48 @@ class GameWidget:
     def draw_game(self):
         self.guesses_canvas.delete("all")
 
+        n = 0
+
         for i in range(len(self.game.guesses)):
             self.draw_previous_guess(i)
+            n += 1
 
-        # draw current guess
-        i = len(self.game.guesses)
-
-        if i < self.game.tries:
+        if n < self.game.tries and not self.game.is_finished:
             self.draw_input_cells()
             self.invalid_guess = False
+            n += 1
 
-        # draw empty guesses remaining
-        for i in range(len(self.game.guesses), self.game.tries):
+        for i in range(n, self.game.tries):
             for j in range(self.letter_count):
                 self.draw_letterbox(i, j)
 
         self.draw_keys()
 
-    def on_entry_click(self, event):
-        self.current_cell = self.input_cells[event.widget.find_closest(event.x, event.y)[0]]
-        self.draw_input_cells()
+    def on_input_cell_click(self, j):
+        def callback(event):
+            self.current_cell = j
+            self.draw_input_cells()
+
+        return callback
 
     def input_char(self, char):
-        if self.game.state != State.OPEN:
-            return
-        if self.current_cell < self.letter_count:
-            self.current_guess[self.current_cell] = char
+        if not self.game.is_finished:
+            if self.current_cell < self.letter_count:
+                self.current_guess[self.current_cell] = char
 
     def input_clear(self):
-        if self.game.state != State.OPEN:
-            return
-        self.input_char(" ")
+        if not self.game.is_finished:
+            self.input_char(" ")
 
     def input_advance(self):
-        if self.game.state != State.OPEN:
-            return
-        if self.current_cell < self.letter_count:
-            self.current_cell += 1
+        if not self.game.is_finished:
+            if self.current_cell < self.letter_count:
+                self.current_cell += 1
 
     def input_back(self):
-        if self.game.state != State.OPEN:
-            return
-        if self.current_cell > 0:
-            self.current_cell -= 1
+        if not self.game.is_finished:
+            if self.current_cell > 0:
+                self.current_cell -= 1
 
     def undo(self):
         if self.game.guesses:
@@ -282,12 +298,16 @@ class GameWidget:
         self.undo()
         self.draw_game()
 
-    def button_solve(self):
-        if self.button_ok:
-            self.button_ok.destroy()
-        solver = Solver(self.game)
-        solver.guess()
-        self.draw_game()
+    def button_give_up(self):
+        if not self.game.is_finished:
+            self.game.guess(self.game.solution)
+            self.draw_game()
+
+    def button_solver(self):
+        if not self.game.is_finished:
+            solver = Solver(self.game)
+            solver.guess()
+            self.draw_game()
 
     def destroy(self):
         self.guesses_frame.destroy()
@@ -315,7 +335,11 @@ class GameWidget:
 
         def menu_button(text, command):
             button = Button(
-                self.menu_frame, text=text, width=button_width, font=button_font, command=command
+                self.menu_frame,
+                text=text,
+                width=button_width,
+                font=button_font,
+                command=command,
             )
             menu_grid(button)
 
@@ -323,29 +347,20 @@ class GameWidget:
         button_font = Font(size=12)
         button_width = sx(12)
 
-        select_wordset = Combobox(
+        menu_button("NEW GAME", self.button_new_game)
+
+        select_wordset = OptionMenu(
             self.menu_frame,
-            textvariable=self.word_set_var,
-            values=list(WORD_SETS.keys()),
-            font=button_font,
-            width=button_width,
+            self.word_set_var,
+            *WORD_SETS.keys(),
         )
+        select_wordset.config(width=sx(11), font=button_font)
         menu_grid(select_wordset)
 
-        select_tries = Scale(
-            self.menu_frame,
-            variable=self.n_tries_var,
-            length=button_width * 10,
-            orient=HORIZONTAL,
-            from_=1,
-            to=10,
-        )
-        menu_grid(select_tries)
-
-        menu_button("NEW GAME", self.button_new_game)
         menu_button("RESTART", self.button_restart)
         menu_button("UNDO", self.button_undo)
-        menu_button("SOLVER", self.button_solve)
+        menu_button("SOLVER", self.button_solver)
+        menu_button("GIVE UP", self.button_give_up)
         menu_button("QUIT", lambda: sys.exit(0))
 
         # Title
